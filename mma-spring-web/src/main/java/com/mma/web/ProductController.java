@@ -1,5 +1,7 @@
 package com.mma.web;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -86,6 +88,22 @@ public class ProductController {
 						"Product ID: " + p.getId() + " does not exist and you are attempting to delete it.");
 			}
 
+		} catch (Exception e) {
+			jr = JsonResponse.getInstance(e);
+		}
+		return jr;
+	}
+	
+	@GetMapping("")
+	public JsonResponse getByCode(@RequestParam String code) {
+		JsonResponse jr = null;
+		try {
+			Optional<Product> p = productRepo.findByCode(code);
+			if (p.isPresent()) {
+				jr = JsonResponse.getInstance(p);
+			} else {
+				jr = JsonResponse.getInstance("No product found for code: " + code);
+			}
 		} catch (Exception e) {
 			jr = JsonResponse.getInstance(e);
 		}
